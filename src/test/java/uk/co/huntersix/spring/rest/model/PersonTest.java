@@ -1,8 +1,9 @@
 package uk.co.huntersix.spring.rest.model;
 
-import org.junit.Test;
 
-import static junit.framework.TestCase.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PersonTest {
     @Test
