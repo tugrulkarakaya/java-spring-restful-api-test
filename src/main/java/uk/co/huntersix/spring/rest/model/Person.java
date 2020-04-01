@@ -53,12 +53,13 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return firstName.equalsIgnoreCase(person.firstName) &&
-                lastName.equalsIgnoreCase(person.lastName);
+        return Objects.equals(id, person.id) &&
+                Objects.equals(firstName, person.firstName) &&
+                Objects.equals(lastName, person.lastName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName.toLowerCase(), lastName.toLowerCase());
+        return Objects.hash(id, firstName, lastName);
     }
 }
