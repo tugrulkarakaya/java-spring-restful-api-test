@@ -15,13 +15,26 @@ class PersonDataServiceTest {
 
     private PersonDataService service = new PersonDataService();
 
-    @DisplayName("Test if find person")
+    @DisplayName("Test if can find a person")
     @Test
-    void findPerson() {
+    void findPersonShouldGetPerson() {
+        //given
+        final String firstName="Mary";
+        final String lastName="Smith";
+
+        //when
+        Person actualPerson = service.findPerson(lastName,firstName);
+
+        //then
+        then(firstName).as("Check that expected person firstName is equal to actual")
+                .isEqualTo(actualPerson.getFirstName());
+
+        then(lastName).as("Check that expected person lastName is equal to actual")
+                .isEqualTo(actualPerson.getLastName());
     }
 
     @Test
-    @DisplayName("Test person not found exception")
+    @DisplayName("Test PersonNotFoundException and exception message")
     void PersonNotFoundExceptionHandler() {
         //given
         final String firstName="Tugrul";
