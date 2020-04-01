@@ -92,7 +92,7 @@ public class PersonControllerTest {
         MvcResult mvcResult =  this.mockMvc.perform(post("/person")
                 .param("firtName","Mike")
                 .param("lastName","Frijson"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andReturn();
         System.out.println(mvcResult.getResponse().getContentAsString());
     }
