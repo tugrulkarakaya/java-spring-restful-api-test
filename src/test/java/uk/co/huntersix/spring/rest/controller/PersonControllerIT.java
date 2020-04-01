@@ -14,11 +14,15 @@ import org.springframework.util.MultiValueMap;
 import uk.co.huntersix.spring.rest.model.Person;
 import uk.co.huntersix.spring.rest.referencedata.PersonDataService;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DisplayName("Person Controller Integration Test")
@@ -51,7 +55,7 @@ public class PersonControllerIT {
 
     @Test
     @DisplayName("Insert person Integration Test")
-    void testInsertPersonIntegration() {
+    void shouldInsertPerson() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -62,8 +66,22 @@ public class PersonControllerIT {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);;
         ResponseEntity response = restTemplate.postForEntity("/person",request, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
 
+    @Test
+    public void shouldReturnConflictWhenPersonAlreadyExist()  {
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("firstName","Mary");
+        map.add("lastName","Smith");
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);;
+
+        ResponseEntity<Map> response = restTemplate.postForEntity("/person",request, Map.class);
+
+        assertThat(HttpStatus.CONFLICT).isEqualTo(response.getStatusCode());
+        assertThat ("Person already exists!").isEqualTo(response.getBody().get("message"));
     }
 
 }
