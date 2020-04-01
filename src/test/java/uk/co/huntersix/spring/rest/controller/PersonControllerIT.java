@@ -8,14 +8,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import uk.co.huntersix.spring.rest.model.Person;
 import uk.co.huntersix.spring.rest.referencedata.PersonDataService;
 
 import java.util.List;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DisplayName("Person Controller Integration Test")
 public class PersonControllerIT {
     @Autowired
     private TestRestTemplate restTemplate;
@@ -42,4 +48,22 @@ public class PersonControllerIT {
                 .isEqualTo(person);
 
     }
+
+    @Test
+    @DisplayName("Insert person Integration Test")
+    void testInsertPersonIntegration() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("firstName","Maria");
+        map.add("lastName","Blackstone");
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);;
+        ResponseEntity response = restTemplate.postForEntity("/person",request, String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+
+    }
+
 }

@@ -30,6 +30,6 @@ public class PersonController {
 
     @PostMapping("/person")
     public ResponseEntity<Person> person(Person person) {
-        return new ResponseEntity<>(personDataService.insertPerson(person.getLastName(),person.getFirstName()), HttpStatus.OK);
+        return new ResponseEntity<>(personDataService.insertPerson(person.getLastName(),person.getFirstName()), HttpStatus.CREATED);
     }
 }
