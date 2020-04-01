@@ -69,6 +69,23 @@ class PersonDataServiceTest {
     }
 
     @Test
+    @DisplayName("Test if find all thrown exception when ther eis no record found")
+    void findAllShouldThrowExceptionIfRecordNotFound() {
+        //given
+        final String filter="non-exists-term";
+
+        //when
+        Throwable throwable =  catchThrowable(()->service.findAll(filter));
+
+        //then
+        then(throwable).as("Person Not Found should be thrown if the filter does not match any name or lastname")
+                .isInstanceOf(PersonNotFoundException.class)
+                .as("Person Not Found exception message contains")
+                .hasMessage("There is no person in the records!");
+
+    }
+
+    @Test
     @DisplayName("Test PersonNotFoundException and exception message")
     void PersonNotFoundExceptionHandler() {
         //given
