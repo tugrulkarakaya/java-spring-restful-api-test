@@ -1,21 +1,32 @@
 package uk.co.huntersix.spring.rest.referencedata;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import uk.co.huntersix.spring.rest.CustomException.PersonExistsException;
 import uk.co.huntersix.spring.rest.CustomException.PersonNotFoundException;
 import uk.co.huntersix.spring.rest.model.Person;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 @DisplayName("Person Data Service Test")
 class PersonDataServiceTest {
 
-    private PersonDataService service = new PersonDataService();
+    private PersonDataService service;
 
-    @DisplayName("Test if can find a person")
+    @BeforeEach
+    void setUp() {
+        service  = new PersonDataService();
+    }
+
+    @DisplayName("Test if can get a person")
     @Test
     void findPersonShouldGetPerson() {
         //given
@@ -31,6 +42,30 @@ class PersonDataServiceTest {
 
         then(lastName).as("Check that expected person lastName is equal to actual")
                 .isEqualTo(actualPerson.getLastName());
+    }
+
+    @DisplayName("Test if can find all people")
+    @ParameterizedTest(name = "{displayName} - [{index}] {arguments}")
+    @CsvSource({
+            "Tugrul, 1",
+            "Brian, 2",
+            "Brown, 2",
+            "Golan, 1",
+            "Mary,2",
+    })
+    void findAllShouldGetAllRecords(String filter, int foundResult) {
+        //given
+        service.insertPerson("Golan","Brian");
+        service.insertPerson("Karakaya","Tugrul");
+        service.insertPerson("Brown","Mary");
+
+
+        //when
+        List<Person> people = service.findAll(filter);
+
+        //then
+        then(people).as(filter + " should have been found "+foundResult+" times in the records")
+                .hasSize(foundResult);
     }
 
     @Test
