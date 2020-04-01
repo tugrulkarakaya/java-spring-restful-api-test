@@ -28,6 +28,24 @@ class PersonDataServiceTest {
 
     @DisplayName("Test if can get a person")
     @Test
+    @Order(100) //it is good to execute this after testing get person
+    void insertPersonShouldAddNewRecord() {
+        //given
+        final String firstName="Meriam";
+        final String lastName="Blacsmith";
+
+        //when
+        Person actualPerson = service.insertPerson(lastName,firstName);
+        Person found = service.findPerson(lastName,firstName);
+        //then
+        then(actualPerson).as("the person should be saved")
+                .isEqualTo(found);
+
+    }
+
+    @DisplayName("Test if can get a person")
+    @Test
+    @Order(1)
     void findPersonShouldGetPerson() {
         //given
         final String firstName="Mary";

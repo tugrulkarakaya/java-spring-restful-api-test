@@ -27,7 +27,7 @@ public class PersonDataService {
                                  && p.getFirstName().equalsIgnoreCase(person.getFirstName()));
 
     public Person findPerson(String lastName, String firstName) {
-        return  PERSON_DATA.stream()
+        return  repository.stream()
             .filter(p -> p.getFirstName().equalsIgnoreCase(firstName)
                 && p.getLastName().equalsIgnoreCase(lastName))
                 .findFirst().orElseThrow(PersonNotFoundException::new);
