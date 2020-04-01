@@ -27,12 +27,12 @@ public class SmokeTest {
     }
 
     @Test
-    @DisplayName("Contex Loaded")
+    @DisplayName("Check Controllers exists")
     public void checkPersonController(){
-        assertThat(this.ctx).isNotNull();
         assertThat(this.ctx.containsBean("personDataService")).isTrue();
         assertThat(this.ctx.containsBean("personController")).isTrue();
         assertThat(this.ctx.containsBean("person")).isTrue();
+
     }
 
     @Test
@@ -42,6 +42,6 @@ public class SmokeTest {
         ProtocolHandler protocolHandler = embeddedServletContainer.getTomcat().getConnector().getProtocolHandler();
         int timeout = ((AbstractProtocol<?>) protocolHandler).getConnectionTimeout();
         assertThat(timeout).isEqualTo(5000);
-        //default value is 60000 updated is as 5000 in properteis file
+        //default value is 60000 updated is as 5000 in properties file
     }
 }

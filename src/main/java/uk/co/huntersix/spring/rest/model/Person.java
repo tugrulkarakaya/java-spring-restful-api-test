@@ -2,10 +2,12 @@ package uk.co.huntersix.spring.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Component
 public class Person {
     private static final AtomicLong counter = new AtomicLong();
 
