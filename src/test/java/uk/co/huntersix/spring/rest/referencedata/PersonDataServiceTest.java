@@ -65,17 +65,18 @@ class PersonDataServiceTest {
     @DisplayName("Test if can find all people")
     @ParameterizedTest(name = "{displayName} - [{index}] {arguments}")
     @CsvSource({
-            "Tugrul, 1",
-            "Brian, 2",
-            "Brown, 2",
+            "Karakaya, 2",
+            "Brown, 4",
             "Golan, 1",
-            "Mary,2",
     })
     void findAllShouldGetAllRecords(String filter, int foundResult) {
         //given
         service.insertPerson("Golan","Brian");
+        service.insertPerson("Karakaya","Hasan");
+        service.insertPerson("Brown","Meryem");
         service.insertPerson("Karakaya","Tugrul");
         service.insertPerson("Brown","Mary");
+        service.insertPerson("Brown","Elly");
 
 
         //when

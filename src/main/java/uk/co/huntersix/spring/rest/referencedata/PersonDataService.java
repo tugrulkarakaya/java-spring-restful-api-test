@@ -44,8 +44,7 @@ public class PersonDataService {
     }
 
     public List<Person> findAll(String filter) {
-        List<Person> people=  repository.stream().filter(p-> p.getFirstName().equalsIgnoreCase(filter)
-                                        || p.getLastName().equalsIgnoreCase(filter))
+        List<Person> people=  repository.stream().filter(p-> p.getLastName().equalsIgnoreCase(filter))
                 .collect(Collectors.toList());
         if(0== people.size()) {
             throw new PersonNotFoundException();

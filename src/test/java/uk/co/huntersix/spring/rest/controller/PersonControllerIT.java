@@ -43,7 +43,7 @@ public class PersonControllerIT {
     @Test
     @DisplayName("Find People Integration Test")
     void testFindPeopleIntegration() {
-        List foundHashMap = restTemplate.getForObject("/person/"+person.getFirstName(), List.class);
+        List foundHashMap = restTemplate.getForObject("/person/"+person.getLastName(), List.class);
         ObjectMapper mapper = new ObjectMapper();
         List<Person> found = mapper.convertValue(foundHashMap, new TypeReference<List<Person>>() { });
 
