@@ -1,5 +1,6 @@
 package uk.co.huntersix.spring.rest.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,11 +12,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import uk.co.huntersix.spring.rest.CustomException.PersonExistsException;
 import uk.co.huntersix.spring.rest.CustomException.PersonNotFoundException;
 import uk.co.huntersix.spring.rest.model.Person;
 import uk.co.huntersix.spring.rest.referencedata.PersonDataService;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -61,7 +66,7 @@ public class PersonControllerTest {
 
     @Test
     @DisplayName("Should Return Person From Service")
-    public void shouldReturn204ResponseIfPersonNonExists() throws Exception {
+    public void shouldReturnNotFoundResponseIfPersonNonExists() throws Exception {
         given(personDataService.findPerson(any(), any())).willThrow(PersonNotFoundException.class);
 
         this.mockMvc.perform(get("/person/smith/mary"))
@@ -84,6 +89,8 @@ public class PersonControllerTest {
                 .andReturn();
     }
 
+
+
     @Test
     @DisplayName("Should add person to db")
     public void shouldInsertPerson() throws Exception {
@@ -96,5 +103,33 @@ public class PersonControllerTest {
                 .andReturn();
         System.out.println(mvcResult.getResponse().getContentAsString());
     }
+    @Test
+    public void shouldReturnEmptyResultForNoPeopleSearch() throws Exception {
+        given(personDataService.findAll(any())).willReturn(Collections.emptyList());
+
+        this.mockMvc.perform(get("/person/adam"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$",hasSize(0)));
+    }
+    @Test
+    public void shouldReturnConflictWhenPersonAlreadyExist() throws Exception {
+        Map<String, String> elements = new HashMap();
+        elements.put("firstName", "Tugrul");
+        elements.put("lastName", "Karakaya");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(elements);
+
+        given(personDataService.insertPerson(any(),any())).willThrow(PersonExistsException.class);
+
+        this.mockMvc.perform(post("/person").contentType(MediaType.APPLICATION_JSON_UTF8).content(json))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(status().reason("Person already exists!"));
+
+    }
+
 
 }
