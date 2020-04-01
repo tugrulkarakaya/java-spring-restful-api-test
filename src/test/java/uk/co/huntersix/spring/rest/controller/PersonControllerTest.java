@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import uk.co.huntersix.spring.rest.CustomException.PersonNotFoundException;
@@ -15,11 +17,13 @@ import uk.co.huntersix.spring.rest.referencedata.PersonDataService;
 
 import java.util.Arrays;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -78,6 +82,19 @@ public class PersonControllerTest {
                 .andExpect(jsonPath("$[0].firstName",is(validPerson.getFirstName())))
                 .andExpect(jsonPath("$[1].firstName",is("Tugrul")))
                 .andReturn();
+    }
+
+    @Test
+    @DisplayName("Should add person to db")
+    public void shouldInsertPerson() throws Exception {
+        given(personDataService.insertPerson(any(),any())).willReturn(new Person("Mike", "Frijson"));
+
+        MvcResult mvcResult =  this.mockMvc.perform(post("/person")
+                .param("firtName","Mike")
+                .param("lastName","Frijson"))
+                .andExpect(status().isOk())
+                .andReturn();
+        System.out.println(mvcResult.getResponse().getContentAsString());
     }
 
 }
