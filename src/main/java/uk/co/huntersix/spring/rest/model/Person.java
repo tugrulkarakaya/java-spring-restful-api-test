@@ -1,5 +1,8 @@
 package uk.co.huntersix.spring.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -14,7 +17,8 @@ public class Person {
         // empty
     }
 
-    public Person(String firstName, String lastName) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public Person(@JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName) {
         this.id = counter.incrementAndGet();
         this.firstName = firstName;
         this.lastName = lastName;

@@ -53,4 +53,9 @@ public class PersonDataService {
 
         return people;
     }
+
+    public Person getFirst() {
+        //ToDo: needs more  unit test. I created this method just for Integration test for demo purposes
+        return repository.get(0);
+    }
 }
